@@ -9,21 +9,32 @@ const mainStyle = {
   flexDirection: 'column',
   justifyContent: 'center',
   alignItems: 'left',
-  fontSize: 25,
+  fontSize: 20,
   color: '#3d2f26ed',
   marginLeft: '30px',
 };
 class App extends Component {
   state = {
-    contacts: [
-      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
-      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
-      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
-      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
-    ],
+    contacts: [],
     filter: '',
+    name: '',
+    number: '',
   };
-
+  componentDidMount() {
+    const contacts = localStorage.getItem('contactsLocal');
+    const parsedContactsLocal = JSON.parse(contacts);
+    if (parsedContactsLocal) {
+      this.setState({ contacts: parsedContactsLocal });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.contacts !== prevState.contacts) {
+      localStorage.setItem(
+        'contactsLocal',
+        JSON.stringify(this.state.contacts)
+      );
+    }
+  }
   addContact = data => {
     const { contacts } = this.state;
     contacts.find(
@@ -35,25 +46,26 @@ class App extends Component {
         }));
     console.log(contacts);
   };
-  getVisibleContact = () => {
+  getListContacts = () => {
     const { contacts, filter } = this.state;
-    const normalizedfilter = filter.toLowerCase();
+    const normalizeFilter = filter.toLowerCase();
 
     return contacts.filter(contact =>
-      contact.name.toLowerCase().includes(normalizedfilter)
+      contact.name.toLowerCase().includes(normalizeFilter)
     );
+  };
+  changeFilter = event => {
+    this.setState({ filter: event.currentTarget.value });
   };
   deleteContact = contactId => {
     this.setState(prevState => ({
       contacts: prevState.contacts.filter(contact => contact.id !== contactId),
     }));
   };
-  changeFilter = event => {
-    this.setState({ filter: event.currentTarget.value });
-  };
+
   render() {
     const { filter } = this.state;
-    const visibleContact = this.getVisibleContact();
+    const visibleContact = this.getListContacts();
 
     return (
       <div style={mainStyle}>

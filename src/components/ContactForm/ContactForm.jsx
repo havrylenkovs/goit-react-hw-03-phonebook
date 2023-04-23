@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 import { nanoid } from 'nanoid';
+import PropTypes from 'prop-types';
+
 class ContactForm extends Component {
   state = {
     name: '',
@@ -56,6 +58,7 @@ class ContactForm extends Component {
 
         <label>
           Number
+          {}
           <input
             style={{
               height: '34px',
@@ -91,5 +94,8 @@ class ContactForm extends Component {
     );
   }
 }
-
+ContactForm.propTypes = {
+  name: PropTypes.string,
+  number: PropTypes.string,
+};
 export default ContactForm;
